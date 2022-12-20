@@ -1,15 +1,15 @@
 #include <stdio.h>  //fprintf
 #include <stdlib.h> //exit(0)
 #include <unistd.h> // is this really needed?
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include <errno.h> //int errno, holds error information for system calls
+#include <sys/types.h> //bind, socket, getaddrinfo 
+#include <sys/socket.h> //socket, getaddrinfo, bind, connect, accept, 
+#include <netinet/in.h> //inet_addr structs, 
+#include <arpa/inet.h> //inet_ntop -> convert ip addr to human readable form
+#include <netdb.h> // getaddrinfo, gethostbyname, gethostbyaddr, getnameinfo()
 
 // #include <unistd.h> //only linux
 // #include <string.h>
-#include <netdb.h>
 // #include <sys/types.h>
 // #include <sys/types.h>
 
