@@ -5,9 +5,15 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <signal.h>
 
 #define PORT "3490"
 #define BACKLOG 10
+
+void sigchld_handler(int s)
+{
+	while(waitpid(-1, NULL, WNOHANG) > 0);
+}
 
 void *get_in_addr(struct sockaddr *sa) {
     if (sa->sa_family == AF_INET) {
@@ -22,6 +28,9 @@ int main(void) {
     struct addrinfo *hints, *servinfo, *p;
     socklen_t sin_size;
     int status;
+    int yes = 1;
+	struct sigaction sa;
+
 
     memset(&hints, 0, sizeof hints);
 
@@ -40,8 +49,46 @@ int main(void) {
             continue;
         }
 
-        
+        if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
+            perror("setsockopt");
+            exit(1);
+        }
+
+        if (bind(sockfd, servinfo->ai_addr, servinfo->ai_addrlen) == -1) {
+            close(sockfd);
+            continue;
+        }
+
+        break;
     }
+
+    if (p == NULL) {
+        fprintf(stderr, "server: failed to bind\n");
+        return 2;
+    }
+
+    freeaddrinfo(servinfo);
+
+    if (listen(sockfd, BACKLOG) == -1) {
+        perror("listen");
+        exit(1);
+    }
+
+   	sa.sa_handler = sigchld_handler; // reap all dead processes
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+		perror("sigaction");
+		exit(1);
+	} 
+
+    printf("server: waotomg for connections...\n");
+
+    while(1) {
+        //
+    }
+
+    
 
 }
 

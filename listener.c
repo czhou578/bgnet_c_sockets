@@ -1,3 +1,5 @@
+//datagram sockets "server" demo
+
 #include <stdio.h>  //fprintf
 #include <stdlib.h> //exit(0)
 #include <unistd.h> // is this really needed?
@@ -16,7 +18,7 @@
 #define MYPORT "4950"
 #define MAXBUFLEN 100
 
-void *get_in_addr(struct sockaddr *sa) {
+void *get_in_addr(struct sockaddr *sa) { //get ip address depending on version
     if (sa->sa_family == AF_INET) {
         return &(((struct sockaddr_in*)sa)->sin_addr);
     }
