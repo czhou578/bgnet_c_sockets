@@ -36,7 +36,7 @@ void *get_in_addr(struct sockaddr *sa) {
 
 int main(void) {
     int sockfd;
-    struct addrinfo *hints, *servinfo, *p;
+    struct addrinfo hints, *servinfo, *p;
     socklen_t sin_size;
     int status;
     int yes = 1;
@@ -45,9 +45,9 @@ int main(void) {
 
     memset(&hints, 0, sizeof hints);
 
-    hints->ai_family = AF_UNSPEC;
-    hints->ai_socktype = SOCK_STREAM;
-    hints->ai_flags = AI_PASSIVE;
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
 
     if ((status = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));

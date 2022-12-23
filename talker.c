@@ -1,3 +1,5 @@
+//datagram client demo
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -13,7 +15,7 @@
 
 int main(int argc, char*argv[]) {
     int sockfd;
-    struct addrinfo *hints, *results, *p;
+    struct addrinfo hints, *results, *p;
     int rv;
     int numbytes;
 
@@ -23,8 +25,8 @@ int main(int argc, char*argv[]) {
     }
 
     memset(&hints, 0, sizeof hints);
-    hints->ai_family = AF_UNSPEC;
-    hints->ai_socktype = SOCK_DGRAM;
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_DGRAM;
 
     if ((rv = getaddrinfo(argv[1], PORT, &hints, &results)) != 0) {
         fprintf(stderr, "getaddr info: %s\n", gai_strerror(rv));
