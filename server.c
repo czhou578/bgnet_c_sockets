@@ -9,6 +9,8 @@
 // struct addrinfo *ai_next; // linked list, next node
 // };
 
+// stream socket server demo
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -36,11 +38,14 @@ void *get_in_addr(struct sockaddr *sa) {
 
 int main(void) {
     int sockfd;
+    int new_fd;
     struct addrinfo hints, *servinfo, *p;
-    socklen_t sin_size;
+    socklen_t sin_size; //unsigned opaque integer
+    struct sockaddr_storage their_addr;
     int status;
     int yes = 1;
 	struct sigaction sa;
+    char s[INET6_ADDRSTRLEN];
 
 
     memset(&hints, 0, sizeof hints);
@@ -93,10 +98,34 @@ int main(void) {
 		exit(1);
 	} 
 
-    printf("server: waotomg for connections...\n");
+    printf("server: waiting for connections...\n");
 
     while(1) {
         //testing
+        sin_size = sizeof(their_addr);
+        new_fd = accept(sockfd, (struct sockaddr * )&their_addr, &sin_size);
+
+        if (new_fd == -1) {
+            perror("accept");
+            continue;
+        }
+
+        inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr*)&their_addr), s, sizeof s);
+        printf("server: connection from %s\n", s);
+
+        if (!fork()) {
+            close(sockfd);
+            if (send(new_fd, "hi", 13, 0) == -1) {
+                perror('send');
+            }
+
+            close(new_fd);
+            exit(0);
+        }
+
+        close(new_fd);
     }
+
+    return 0;
 }
 
