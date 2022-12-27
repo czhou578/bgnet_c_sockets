@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
         return 2;
     }
 
-    inet_ntop(p->ai_family, get_in_addr((struct socaddr *)p->ai_addr), s, sizeof s);
+    inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr), s, sizeof s);
     printf("client: connecting to %s\n", s);
 
     freeaddrinfo(servinfo);
